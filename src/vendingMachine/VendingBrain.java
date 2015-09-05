@@ -4,7 +4,7 @@ public class VendingBrain {
 	
 	// Initial values for vending machine traits
 	private double insertedTotal = 0.00;
-	private double availableChange = 10.00;
+	private double availableChange = 0.00;
 	private double availableCoinReturn = 0.00;
 	private double changeDifference = 0.00;
 	private int[] products = new int[3];
@@ -50,82 +50,113 @@ public class VendingBrain {
 		
 		//Buying product A
 		else if(choiceInput.equals("a") || choiceInput.equals("A")){
-			if (insertedTotal >= 1.00){
-				checkMachine(0);
-				changeDifference = insertedTotal - 1.00;
-				
-				if (changeDifference > 0.00){
-					updateAvailableChange(1, changeDifference);
+			if (checkMachine(0) != 4){
+				if (insertedTotal >= 1.00){
+					checkMachine(0);
+					changeDifference = insertedTotal - 1.00;
+					
+					if (changeDifference > 0.00){
+						updateAvailableChange(1, changeDifference);
+					}
+					else{
+						updateAvailableChange(0, 1.00);
+					}
+					
+					updateCoinReturnTotal(changeDifference);
 				}
+				
+				else {
+					System.out.println("Insufficient funds");
+				}
+				
+				//Exact change checking
+				if (availableChange < 0.00){
+					availableChange = availableChange + changeDifference;
+					availableCoinReturn = insertedTotal;
+					System.out.println("Exact change required");
+					dispenseChange();
+				}
+				
 				else{
-					updateAvailableChange(0, 1.00);
-				}
-				
-				updateCoinReturnTotal(changeDifference);
-			}
-			
-			else {
-				System.out.println("Insufficient funds");
-			}
-			
-			dispenseChange();
-			insertedTotal = 0.00;			
+					dispenseChange();
+				}			
+			}		
 		}
 		
 		//Buying Product B
 		else if(choiceInput.equals("b") || choiceInput.equals("B")){
-			if (insertedTotal >= 0.50){
-				checkMachine(1);
-				changeDifference = insertedTotal - 0.50;
-				
-				if (changeDifference > 0.00){
-					updateAvailableChange(1, changeDifference);
+			if (checkMachine(1) != 4){
+				if (insertedTotal >= 0.50){
+					changeDifference = insertedTotal - 0.50;
+					
+					if (changeDifference > 0.00){
+						updateAvailableChange(1, changeDifference);
+					}
+					else{
+						updateAvailableChange(0, 0.50);
+					}
+					
+					updateCoinReturnTotal(changeDifference);
 				}
+				
+				else {
+					System.out.println("Insufficient funds");
+				}
+				
+				//Exact change checking
+				if (availableChange < 0.00){
+					availableChange = availableChange + changeDifference;
+					availableCoinReturn = insertedTotal;
+					System.out.println("Exact change required");
+					dispenseChange();
+				}
+				
 				else{
-					updateAvailableChange(0, 0.50);
+					dispenseChange();
 				}
-				
-				updateCoinReturnTotal(changeDifference);
-			}
-			
-			else {
-				System.out.println("Insufficient funds");
-			}
-			
-			dispenseChange();
-			insertedTotal = 0.00;
+			}	
 		}
 		
 		//Buying Product C
 		else if(choiceInput.equals("c") || choiceInput.equals("C")){
-			if (insertedTotal >= 0.65){
-				checkMachine(0);
-				changeDifference = insertedTotal - 0.65;
-				
-				if (changeDifference > 0.00){
-					updateAvailableChange(1, changeDifference);
+			if (checkMachine(2) != 4) {
+				if (insertedTotal >= 0.65){
+					changeDifference = insertedTotal - 0.65;
+					
+					if (changeDifference > 0.00){
+						updateAvailableChange(1, changeDifference);
+					}
+					else{
+						updateAvailableChange(0, 0.65);
+					}
+					
+					updateCoinReturnTotal(changeDifference);
 				}
+				
+				else {
+					System.out.println("Insufficient funds");
+				}
+				
+				//Exact change checking
+				if (availableChange < 0.00){
+					availableChange = availableChange + changeDifference;
+					availableCoinReturn = insertedTotal;
+					System.out.println("Exact change required");
+					dispenseChange();
+				}
+				
 				else{
-					updateAvailableChange(0, 1.00);
+					dispenseChange();
 				}
-				
-				updateCoinReturnTotal(changeDifference);
 			}
-			
-			else {
-				System.out.println("Insufficient funds");
-			}
-			
-			dispenseChange();
-			insertedTotal = 0.00;
 		}
 		
 		//Returning Coins
 		else if(choiceInput.equals("r") || choiceInput.equals("R")){
 			updateCoinReturnTotal(insertedTotal);
-			insertedTotal = 0.00;
 			dispenseChange();
 		}
+		
 		
 		//Something unaccounted
 		else {
@@ -133,6 +164,8 @@ public class VendingBrain {
 		}
 	}
 
+	
+	
 /* Methods related to money handling
  * 
  */
@@ -150,8 +183,7 @@ public class VendingBrain {
 		
 		else {
 			availableChange = availableChange - change;
-		}
-		
+		}	
 	}
 	
 	//Updates the amount of money expected to be returned 
@@ -163,7 +195,9 @@ public class VendingBrain {
 	public void dispenseChange(){
 		System.out.println("Returned coins: " + availableCoinReturn +"\n");
 		availableCoinReturn = 0.00;
+		insertedTotal = 0.00;
 	}
+
 	
 /* Methods related to inventory handling
  * 
@@ -171,20 +205,39 @@ public class VendingBrain {
 	
 	// Stocks five of each item in the vending machine
 	public void fillMachine(){
-		products[0] = 1;
+		products[0] = 5;
 		products[1] = 5;
 		products[2] = 5;
 	}
 	
-	public void checkMachine(Integer purchase){
+	public Integer checkMachine(Integer purchase){
 		if (purchase == 0 && products[0] != 0){
 			products[0] = products[0] - 1;
-			System.out.println("Thank you");
+			//System.out.println("Thank you");
+			return purchase;
 		}
+		
+		else if (purchase == 1 && products[1] != 0){
+			products[1] = products[1] - 1;
+			//System.out.println("Thank you");
+			return purchase;
+		}
+		
+		else if (purchase == 2 && products[2] != 0){
+			products[2] = products[2] - 1;
+			//System.out.println("Thank you");
+			return purchase;
+		}
+		
 		else{
 			System.out.println("Sold Out");
+			purchase = 4;
+			return purchase;
 		}
 	}
+
+	
+//Additional features (Not yet implemented)
 	
 	// Stops the program by "shutting off" the vending machine
 	public boolean stopPower(){
