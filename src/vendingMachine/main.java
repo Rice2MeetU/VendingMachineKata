@@ -1,3 +1,7 @@
+/*Author: Alex Saenbandith
+ * Date: 9/4/15
+ */
+
 package vendingMachine;
 import java.util.Scanner;
 
@@ -7,6 +11,7 @@ public class main {
 		// Initialize keyboard and vending machine object
 		Scanner keyboard = new Scanner(System.in);
 		VendingBrain firstBrain = new VendingBrain();
+		firstBrain.fillMachine();
 		boolean isMachineOn = true;
 		
 		//Opening prompt
