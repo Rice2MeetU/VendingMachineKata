@@ -4,7 +4,7 @@ public class VendingBrain {
 	
 	// Initial values for vending machine traits
 	private double insertedTotal = 0.00;
-	private double availableChange = 0.00;
+	private double availableChange = 5.00;
 	private double availableCoinReturn = 0.00;
 	private double changeDifference = 0.00;
 	private int[] products = new int[3];
